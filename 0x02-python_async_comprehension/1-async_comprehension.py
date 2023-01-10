@@ -14,7 +14,4 @@ async def async_comprehension() -> List[float]:
     yield a random number between 0 and 10 while
     looping 10 times
     """
-    result: List = []
-    async for i in async_generator():
-        result.append(i)
-    return(result)
+    return [i async for i in async_generator()]
