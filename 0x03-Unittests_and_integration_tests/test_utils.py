@@ -73,8 +73,14 @@ class TestMemoize(unittest.TestCase):
     of utils
     """
 
-    def test_memoize(self):
+    def test_memoize(self) -> None:
+        """
+            Test memoize
+            """
         class TestClass:
+            """
+            Test class
+            """
 
             def a_method(self):
                 return 42
