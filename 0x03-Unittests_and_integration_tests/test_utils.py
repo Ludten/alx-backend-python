@@ -56,15 +56,15 @@ class TestGetJson(unittest.TestCase):
     A class for testing the get json of utils
     """
 
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False}),
+    ])
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_get_json(self, mock_get):
-        json_data = utils.get_json("http://example.com")
-        self.assertEqual(json_data, {"payload": True})
-        self.assertEqual(len(mock_get.call_args_list), 1)
-
-        json_data = utils.get_json("http://holberton.io")
-        self.assertEqual(json_data, {"payload": False})
-        self.assertEqual(len(mock_get.call_args_list), 2)
+    def test_get_json(self, url, expected, mock_get):
+        json_data = utils.get_json(url)
+        self.assertEqual(json_data, expected)
+        mock_get.assert_called_once_with(url)
 
 
 if __name__ == '__main__':
