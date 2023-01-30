@@ -73,8 +73,7 @@ class TestMemoize(unittest.TestCase):
     of utils
     """
 
-    @parameterized.expand([(42,)])
-    def test_memoize(self, expected):
+    def test_memoize(self):
         class TestClass:
 
             def a_method(self):
@@ -84,12 +83,11 @@ class TestMemoize(unittest.TestCase):
             def a_property(self):
                 return self.a_method()
 
-        with mock.patch.object(TestClass, "a_method") as mock_foo:
-            mock_foo.return_value = expected
+        with mock.patch.object(TestClass, "a_method", ) as mock_foo:
             testclass = TestClass()
-            self.assertEqual(testclass.a_property, expected)
-            self.assertEqual(testclass.a_property, expected)
-            testclass.a_method.assert_called_once()
+            self.assertEqual(testclass.a_property, mock_foo.return_value)
+            self.assertEqual(testclass.a_property, mock_foo.return_value)
+            mock_foo.assert_called_once()
 
 
 if __name__ == '__main__':
