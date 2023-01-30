@@ -13,19 +13,18 @@ import utils
 
 def mocked_requests_get(*args, **kwargs):
     class MockResponse:
-        def __init__(self, json_data, status_code):
+        def __init__(self, json_data):
             self.json_data = json_data
-            self.status_code = status_code
 
         def json(self):
             return self.json_data
 
     if args[0] == 'http://example.com':
-        return MockResponse({"payload": True}, 200)
+        return MockResponse({"payload": True})
     elif args[0] == 'http://holberton.io':
-        return MockResponse({"payload": False}, 200)
+        return MockResponse({"payload": False})
 
-    return MockResponse(None, 404)
+    return MockResponse(None)
 
 
 class TestAccessNestedMap(unittest.TestCase):
