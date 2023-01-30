@@ -5,7 +5,7 @@ Utils Test Module
 
 from parameterized import parameterized
 import unittest
-from unittest import mock
+from unittest.mock import patch
 from utils import (
     access_nested_map,
     get_json,
@@ -62,7 +62,7 @@ class TestGetJson(unittest.TestCase):
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False}),
     ])
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @patch('requests.get', side_effect=mocked_requests_get)
     def test_get_json(self, url, expected, mock_get):
         json_data = get_json(url)
         self.assertEqual(json_data, expected)
@@ -90,7 +90,7 @@ class TestMemoize(unittest.TestCase):
             def a_property(self):
                 return self.a_method()
 
-        with mock.patch.object(TestClass, 'a_method') as mockMethod:
+        with patch.object(TestClass, 'a_method') as mockMethod:
             test = TestClass()
             self.assertEqual(test.a_property, mockMethod.return_value)
             self.assertEqual(test.a_property, mockMethod.return_value)
