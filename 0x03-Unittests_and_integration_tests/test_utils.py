@@ -88,7 +88,7 @@ class TestMemoize(unittest.TestCase):
             testclass = TestClass()
             self.assertEqual(testclass.a_property, 7)
             self.assertEqual(testclass.a_property, 7)
-            mock_foo.assert_called_once()
+            testclass.a_method.assert_called_once()
 
 
 if __name__ == '__main__':
