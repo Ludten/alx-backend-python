@@ -8,8 +8,6 @@ import unittest
 from unittest import mock
 import utils
 
-# This method will be used by the mock to replace requests.get
-
 
 def mocked_requests_get(*args, **kwargs):
     class MockResponse:
@@ -75,8 +73,10 @@ class TestMemoize(unittest.TestCase):
 
     def test_memoize(self) -> None:
         """
-            Test memoize
-            """
+        Test memoize
+        """
+        from utils import memoize
+
         class TestClass:
             """
             Test class
@@ -85,7 +85,7 @@ class TestMemoize(unittest.TestCase):
             def a_method(self):
                 return 42
 
-            @utils.memoize
+            @memoize
             def a_property(self):
                 return self.a_method()
 
