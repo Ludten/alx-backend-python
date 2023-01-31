@@ -3,8 +3,6 @@
 Client Test Module
 """
 
-import json
-from urllib.error import HTTPError
 from fixtures import TEST_PAYLOAD
 from typing import Dict
 from client import GithubOrgClient
@@ -92,7 +90,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             """
             if url in route_payload:
                 return Mock(**{'json.return_value': route_payload[url]})
-            return HTTPError
+            return None
 
         cls.get_patcher = patch("requests.get", side_effect=get_payload)
         cls.get_patcher.start()
