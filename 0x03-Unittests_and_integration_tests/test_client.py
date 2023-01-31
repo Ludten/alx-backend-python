@@ -87,16 +87,17 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     of clients
     """
 
-    def setUp(self) -> None:
+    @classmethod
+    def setUp(cls) -> None:
         """
         setup test
         """
         route_payload = {
-            'https://api.github.com/orgs/google': self.org_payload,
-            'https://api.github.com/orgs/google/repos': self.repos_payload,
+            'https://api.github.com/orgs/google': cls.org_payload,
+            'https://api.github.com/orgs/google/repos': cls.repos_payload,
         }
 
-        def mocked_requests_get(url):
+        def mocked_requests_get(url: str):
             """
             Mock request
             """
@@ -104,15 +105,9 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                 return Mock(**{'json.return_value': route_payload[url]})
             return HTTPError
 
-        self.get_patcher = patch(
+        cls.get_patcher = patch(
             'requests.get', side_effect=mocked_requests_get)
-        self.mock_object = self.get_patcher.start()
-
-    def tearDown(self) -> None:
-        """
-        teardown test
-        """
-        self.get_patcher.stop()
+        cls.mock_object = cls.get_patcher.start()
 
     def test_public_repos(self):
         """
@@ -133,3 +128,10 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             test.public_repos(license="apache-2.0"),
             self.apache2_repos
         )
+
+    @classmethod
+    def tearDown(cls) -> None:
+        """
+        teardown test
+        """
+        cls.get_patcher.stop()
