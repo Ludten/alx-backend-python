@@ -37,7 +37,7 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(test._public_repos_url, mock_off.return_value)
 
     @parameterized.expand([
-        ("google", [{"name": "google"}], ["google"])
+        ("google", [{"name": "google"}, {"name": "abc"}], ["google", "abc"])
     ])
     @patch("client.get_json")
     def test_public_repos(self, org, payload, expected, mock_json):
