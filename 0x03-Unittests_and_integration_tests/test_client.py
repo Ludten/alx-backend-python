@@ -49,5 +49,5 @@ class TestGithubOrgClient(unittest.TestCase):
                 org)
             test = GithubOrgClient(org)
             self.assertEqual(test.public_repos(), expected)
-            mock_json.assert_called_once()
             mock_off.assert_called_once()
+            mock_json.assert_called_once()
