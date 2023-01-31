@@ -66,7 +66,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ({"license": {"key": "my_license"}}, "my_license", True),
         ({"license": {"key": "other_license"}}, "my_license", False)
     ])
-    def test_has_license(self, lic, key, expected):
+    def test_has_license(self, lic: Dict, key: str, expected: bool):
         """
         test has_license method
         """
@@ -92,7 +92,10 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             'https://api.github.com/orgs/google/repos': cls.repos_payload,
         }
 
-        def get_payload(url):
+        def get_payload(url: str):
+            """
+            get payload
+            """
             if url in route_payload:
                 return Mock(**{'json.return_value': route_payload[url]})
             return HTTPError
