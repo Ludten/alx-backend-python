@@ -3,12 +3,14 @@
 Client Test Module
 """
 
+import json
+from urllib.error import HTTPError
 from fixtures import TEST_PAYLOAD
 from typing import Dict
 from client import GithubOrgClient
 from parameterized import parameterized, parameterized_class
 import unittest
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import MagicMock, Mock, PropertyMock, patch
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -89,8 +91,18 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """
         setup test
         """
+        route_payload = {
+            'https://api.github.com/orgs/google': self.org_payload,
+            'https://api.github.com/orgs/google/repos': self.repos_payload,
+        }
+
+        def mocked_requests_get(url):
+            if url in route_payload:
+                return Mock(**{'json.return_value': route_payload[url]})
+            return HTTPError
+
         self.get_patcher = patch(
-            'requests.get', side_effect=self.mocked_requests_get)
+            'requests.get', side_effect=mocked_requests_get)
         self.mock_object = self.get_patcher.start()
 
     def tearDown(self) -> None:
@@ -99,11 +111,22 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """
         self.get_patcher.stop()
 
-    def mocked_requests_get(self, *args, **kwargs):
+    def test_public_repos(self):
         """
-        Mock requests
+        test public repos
         """
-        for repo in self.repos_playload:
-            if args[0] == repo['url']:
-                return repo
-            return None
+        test = GithubOrgClient("google")
+        self.assertEqual(
+            test.public_repos(),
+            self.expected_repos
+        )
+
+    def test_public_repos_with_license(self):
+        """
+        test public repos with license
+        """
+        test = GithubOrgClient("google")
+        self.assertEqual(
+            test.public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
