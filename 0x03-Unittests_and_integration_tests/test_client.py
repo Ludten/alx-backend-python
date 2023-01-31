@@ -3,9 +3,10 @@
 Client Test Module
 """
 
+from fixtures import TEST_PAYLOAD
 from typing import Dict
 from client import GithubOrgClient
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 import unittest
 from unittest.mock import MagicMock, PropertyMock, patch
 
@@ -69,3 +70,40 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         test = GithubOrgClient("google")
         self.assertEqual(test.has_license(lic, key), expected)
+
+
+@parameterized_class(
+    ('org_payload', 'repos_payload', 'expected_repos', 'apache2_repos'),
+    [(TEST_PAYLOAD[0][0],
+      TEST_PAYLOAD[0][1],
+      TEST_PAYLOAD[0][2],
+      TEST_PAYLOAD[0][3])]
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+    A class for testing the integration GithubOrgClient
+    of clients
+    """
+
+    def setUp(self) -> None:
+        """
+        setup test
+        """
+        self.get_patcher = patch(
+            'requests.get', side_effect=self.mocked_requests_get)
+        self.mock_object = self.get_patcher.start()
+
+    def tearDown(self) -> None:
+        """
+        teardown test
+        """
+        self.get_patcher.stop()
+
+    def mocked_requests_get(self, *args, **kwargs):
+        """
+        Mock requests
+        """
+        for repo in self.repos_playload:
+            if args[0] == repo['url']:
+                return repo
+            return None
