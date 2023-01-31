@@ -3,9 +3,10 @@
 Utils Test Module
 """
 
+from typing import Dict, Tuple
 from parameterized import parameterized
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from utils import (
     access_nested_map,
     get_json,
@@ -18,10 +19,17 @@ def mocked_requests_get(*args, **kwargs):
     Mock requests
     """
     class MockResponse:
+        """
+        Mock Response class
+        """
+
         def __init__(self, json_data):
             self.json_data = json_data
 
         def json(self):
+            """
+            Return mock json
+            """
             return self.json_data
 
     if args[0] == 'http://example.com':
@@ -42,14 +50,25 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
         ({"a": {"b": 2}}, ("a", "b"), 2),
     ])
-    def test_access_nested_map(self, map, path, expected):
+    def test_access_nested_map(
+        self, map: Dict, path: Tuple[str], expected: int
+    ):
+        """
+        test access nested map
+        """
         self.assertEqual(access_nested_map(map, path), expected)
 
     @parameterized.expand([
         ({}, ("a",), KeyError, "'a'"),
         ({"a": 1}, ("a", "b"), KeyError, "'b'"),
     ])
-    def test_access_nested_map_exception(self, map, path, expected, mess):
+    def test_access_nested_map_exception(
+        self, map: Dict, path: Tuple[str],
+        expected: Exception, mess: str
+    ) -> None:
+        """
+        test access nested map
+        """
         with self.assertRaises(expected) as cm:
             access_nested_map(map, path)
 
@@ -66,7 +85,12 @@ class TestGetJson(unittest.TestCase):
         ("http://holberton.io", {"payload": False}),
     ])
     @patch('requests.get', side_effect=mocked_requests_get)
-    def test_get_json(self, url, expected, mock_get):
+    def test_get_json(
+        self, url: str, expected: Dict, mock_get: MagicMock
+    ) -> None:
+        """
+        test get json
+        """
         json_data = get_json(url)
         self.assertEqual(json_data, expected)
         mock_get.assert_called_once_with(url)
