@@ -14,6 +14,9 @@ from utils import (
 
 
 def mocked_requests_get(*args, **kwargs):
+    """
+    Mock requests
+    """
     class MockResponse:
         def __init__(self, json_data):
             self.json_data = json_data
@@ -92,8 +95,8 @@ class TestMemoize(unittest.TestCase):
 
         with patch.object(TestClass, 'a_method') as mockMethod:
             test = TestClass()
-            test.a_property
-            test.a_property
+            self.assertEqual(test.a_property, mockMethod.return_value)
+            self.assertEqual(test.a_property, mockMethod.return_value)
             mockMethod.assert_called_once()
 
 
