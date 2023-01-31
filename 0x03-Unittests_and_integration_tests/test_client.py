@@ -3,10 +3,11 @@
 Client Test Module
 """
 
+from typing import Dict
 from client import GithubOrgClient
 from parameterized import parameterized
 import unittest
-from unittest.mock import PropertyMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -20,7 +21,10 @@ class TestGithubOrgClient(unittest.TestCase):
         ("abc", {"payload": False})
     ])
     @patch("client.get_json")
-    def test_org(self, org, expected, mock_foo):
+    def test_org(self, org: str, expected: Dict, mock_foo: MagicMock):
+        """
+        test org
+        """
         mock_foo.return_value = expected
         test = GithubOrgClient(org)
         test.org
@@ -29,6 +33,9 @@ class TestGithubOrgClient(unittest.TestCase):
         )
 
     def test_public_repos_url(self):
+        """
+        test public_repos_url
+        """
         with patch.object(
             GithubOrgClient, '_public_repos_url', new_callable=PropertyMock
         ) as mock_off:
@@ -37,7 +44,10 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(test._public_repos_url, mock_off.return_value)
 
     @patch("client.get_json")
-    def test_public_repos(self, mock_json):
+    def test_public_repos(self, mock_json: MagicMock):
+        """
+        test public_repos method
+        """
         mock_json.return_value = [{"name": "google"}, {"name": "abc"}]
         with patch.object(
             GithubOrgClient, '_public_repos_url', new_callable=PropertyMock
